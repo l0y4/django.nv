@@ -21,8 +21,22 @@ jobs:
     steps:
       - run: echo "This is an integration step"
       - run: exit 1
+    continue-on-error: true
 
-  prod:
+prod:
     runs-on: ubuntu-20.04
+    needs: integration  # Run after the integration job
     steps:
       - run: echo "This is a deploy step"
+
+  artifact:
+    runs-on: ubuntu-20.04
+    needs: prod  # Run after the prod job
+    steps:
+      - run: echo "hello" > hello.txt  # Create the file
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: hello-file  # Artifact name
+          path: hello.txt   # File to save as an artifact
+
