@@ -1,29 +1,31 @@
-name: Django                                  # workflow name
+name: Django  # Workflow name
 
 on:
-  push:                                       
-    branches:                                 # similar to "only" in GitLab
+  push:
+    branches:
       - main
 
 jobs:
   build:
-    runs-on: ubuntu-20.04                    # similar to "image" in GitLab
+    runs-on: ubuntu-20.04
     steps:
-      - run: echo "This is a build step"      # similar to "script" in GitLab
+      - run: echo "This is a build step"
 
   test:
     runs-on: ubuntu-20.04
+    needs: build  # Run after the build job
     steps:
       - run: echo "This is a test step"
 
   integration:
     runs-on: ubuntu-20.04
+    needs: test  # Run after the test job
     steps:
       - run: echo "This is an integration step"
       - run: exit 1
-    continue-on-error: true
+    continue-on-error: true  # Allow failure without failing the workflow
 
-prod:
+  prod:
     runs-on: ubuntu-20.04
     needs: integration  # Run after the integration job
     steps:
@@ -39,4 +41,4 @@ prod:
         with:
           name: hello-file  # Artifact name
           path: hello.txt   # File to save as an artifact
-
+        
